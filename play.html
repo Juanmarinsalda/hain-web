@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8"/>
 <base href="/"/>
@@ -7,19 +7,26 @@
 <title>HAIN</title>
 <style>
   html,body{margin:0;padding:0;width:100%;height:100%;background:#000;overflow:hidden;color:#ccc;font-family:system-ui,sans-serif}
-  canvas{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-    width:min(100vw,calc(100vh*1024/576));height:min(100vh,calc(100vw*576/1024));
+  /* IMPORTANTE: no forzar width/height del canvas. El runner de GameMaker asume que el tamaño CSS
+     es igual al tamaño interno del canvas; si se estira, el mouse y el loading quedan desplazados. */
+  canvas{position:absolute;top:50%;left:50%;bottom:-50%;right:-50%;transform:translate(-50%,-50%);
     image-rendering:optimizeSpeed;touch-action:none;outline:none}
-  #start{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    background:#000 url(card.png) center/contain no-repeat;cursor:pointer;z-index:10}
-  #start span{background:rgba(0,0,0,.65);padding:14px 28px;border-radius:8px;font-size:22px;letter-spacing:.1em;color:#fff}
+  #loading_screen{display:none!important}   /* loading gris por defecto de GameMaker */
+  #start{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:14px;padding-bottom:7vh;
+    background:#080916 url(card.png) center/contain no-repeat;cursor:pointer;z-index:10;color:#fff}
+  #start .btn{background:rgba(0,0,0,.65);padding:12px 28px;border-radius:8px;font-size:clamp(14px,3vw,22px);letter-spacing:.1em}
+  #start .bar{display:none;width:min(40vw,320px);height:6px;border-radius:3px;background:rgba(255,255,255,.2);overflow:hidden}
+  #start .bar i{display:block;height:100%;width:40%;background:#f0c040;border-radius:3px;animation:slide 1.1s ease-in-out infinite}
+  @keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
+  #start.loading{cursor:progress;pointer-events:none}
+  #start.loading .bar{display:block}
 </style>
 </head>
 <body>
 <div class="gm4html5_div_class" id="gm4html5_div_id">
   <canvas id="canvas" width="1024" height="576" tabindex="0"></canvas>
 </div>
-<div id="start"><span>▶ JUGAR</span></div>
+<div id="start"><div class="btn" id="msg">▶ PLAY</div><div class="bar"><i></i></div></div>
 
 <script src="html5game/HAIN.js?cachebust=1613019247"></script>
 <script>
@@ -28,9 +35,20 @@
   var started = false;
   function go(){
     if (started) return; started = true;
-    document.getElementById('start').remove();
+    var st = document.getElementById('start');
+    st.classList.add('loading');
+    document.getElementById('msg').textContent = 'Loading…';
     GameMaker_Init();
     document.getElementById('canvas').focus();
+    // El runner crea #loading_screen mientras carga y lo elimina al terminar.
+    var t0 = Date.now(), seen = false;
+    var iv = setInterval(function(){
+      var exists = !!document.getElementById('loading_screen');
+      if (exists) seen = true;
+      if ((seen && !exists) || (!seen && Date.now() - t0 > 10000)) {
+        clearInterval(iv); st.remove(); document.getElementById('canvas').focus();
+      }
+    }, 100);
   }
   document.getElementById('start').addEventListener('pointerdown', go);
   document.addEventListener('keydown', function(e){ if(!started && (e.key==='Enter'||e.key===' ')) go(); });

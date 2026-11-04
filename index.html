@@ -1,42 +1,59 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<title>HAIN — Demo jugable</title>
-<meta name="description" content="HAIN — juego roguelike. Probá la demo en el navegador."/>
+<title>HAIN — Playable Demo</title>
+<meta name="description" content="HAIN — a roguelike adventure. Play the demo right in your browser."/>
 <link rel="icon" href="/favicon.ico"/>
 <meta name="theme-color" content="#080916"/>
 
 <!-- Open Graph -->
 <meta property="og:type" content="website"/>
-<meta property="og:title" content="HAIN — Demo jugable"/>
-<meta property="og:description" content="HAIN — juego roguelike. Probá la demo en el navegador."/>
+<meta property="og:title" content="HAIN — Playable Demo"/>
+<meta property="og:description" content="HAIN — a roguelike adventure. Play the demo right in your browser."/>
 <meta property="og:image" content="https://TU-DOMINIO.vercel.app/card.png"/>
 <meta property="og:url" content="https://TU-DOMINIO.vercel.app/"/>
 
 <!-- X / Twitter Player Card (lo mismo que usa Garden Souls) -->
 <meta name="twitter:card" content="player"/>
-<meta name="twitter:title" content="HAIN — Demo jugable"/>
-<meta name="twitter:description" content="HAIN — juego roguelike. Probá la demo en el navegador."/>
+<meta name="twitter:title" content="HAIN — Playable Demo"/>
+<meta name="twitter:description" content="HAIN — a roguelike adventure. Play the demo right in your browser."/>
 <meta name="twitter:image" content="https://TU-DOMINIO.vercel.app/card.png"/>
 <meta name="twitter:player" content="https://TU-DOMINIO.vercel.app/play"/>
-<meta name="twitter:player:width" content="960"/>
-<meta name="twitter:player:height" content="540"/>
+<meta name="twitter:player:width" content="1024"/>
+<meta name="twitter:player:height" content="576"/>
 <!-- <meta name="twitter:site" content="@TU_USUARIO"/> -->
 
 <style>
   :root{color-scheme:dark}
-  body{margin:0;background:#080916;color:#e8e8f0;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh}
-  h1{margin:24px 0 4px;letter-spacing:.2em}
-  p{margin:0 0 16px;color:#9aa}
-  #frame{width:min(96vw,calc(88vh*16/9));aspect-ratio:16/9;border:0;background:#000;border-radius:6px}
-  a{color:#9bd}
+  html,body{margin:0;height:100%;background:#080916;overflow:hidden}
+  #stage{position:absolute;left:50%;top:0;width:1024px;height:576px;transform-origin:0 0}
+  #frame{width:1024px;height:576px;border:0;background:#000;display:block}
+  #fs{position:fixed;right:10px;top:10px;z-index:5;width:38px;height:38px;padding:0;border:0;border-radius:8px;cursor:pointer;
+      background:rgba(0,0,0,.55);color:#fff;opacity:.55;transition:opacity .15s;display:flex;align-items:center;justify-content:center}
+  #fs:hover{opacity:1}
+  #fs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 </style>
 </head>
 <body>
-  <h1>HAIN</h1>
-  <p>Demo jugable · <a href="/play">pantalla completa</a></p>
-  <iframe id="frame" src="/play" allow="fullscreen; autoplay; gamepad" allowfullscreen></iframe>
+  <div id="stage"><iframe id="frame" src="/play" allow="fullscreen; autoplay; gamepad" allowfullscreen></iframe></div>
+  <button id="fs" title="Fullscreen" aria-label="Fullscreen">
+    <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+  </button>
+<script>
+  // El juego se ve a 1024x576 exactos; escalamos el iframe entero (los clics siguen bien mapeados).
+  function fit(){
+    var s = Math.min(innerWidth/1024, innerHeight/576);
+    var st = document.getElementById('stage');
+    st.style.top = ((innerHeight - 576*s)/2) + 'px';
+    st.style.transform = 'translateX(' + (-512*s) + 'px) scale(' + s + ')';
+  }
+  addEventListener('resize', fit); fit();
+  document.getElementById('fs').addEventListener('click', function(){
+    var f = document.getElementById('frame');
+    (f.requestFullscreen || f.webkitRequestFullscreen || function(){}).call(f);
+  });
+</script>
 </body>
 </html>
