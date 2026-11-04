@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>HAIN — Demo jugable</title>
+<meta name="description" content="HAIN — juego roguelike. Probá la demo en el navegador."/>
+<link rel="icon" href="/favicon.ico"/>
+<meta name="theme-color" content="#080916"/>
+
+<!-- Open Graph -->
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="HAIN — Demo jugable"/>
+<meta property="og:description" content="HAIN — juego roguelike. Probá la demo en el navegador."/>
+<meta property="og:image" content="https://TU-DOMINIO.vercel.app/card.png"/>
+<meta property="og:url" content="https://TU-DOMINIO.vercel.app/"/>
+
+<!-- X / Twitter Player Card (lo mismo que usa Garden Souls) -->
+<meta name="twitter:card" content="player"/>
+<meta name="twitter:title" content="HAIN — Demo jugable"/>
+<meta name="twitter:description" content="HAIN — juego roguelike. Probá la demo en el navegador."/>
+<meta name="twitter:image" content="https://TU-DOMINIO.vercel.app/card.png"/>
+<meta name="twitter:player" content="https://TU-DOMINIO.vercel.app/play"/>
+<meta name="twitter:player:width" content="960"/>
+<meta name="twitter:player:height" content="540"/>
+<!-- <meta name="twitter:site" content="@TU_USUARIO"/> -->
+
+<style>
+  :root{color-scheme:dark}
+  body{margin:0;background:#080916;color:#e8e8f0;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh}
+  h1{margin:24px 0 4px;letter-spacing:.2em}
+  p{margin:0 0 16px;color:#9aa}
+  #frame{width:min(96vw,calc(88vh*16/9));aspect-ratio:16/9;border:0;background:#000;border-radius:6px}
+  a{color:#9bd}
+</style>
+</head>
+<body>
+  <h1>HAIN</h1>
+  <p>Demo jugable · <a href="/play">pantalla completa</a></p>
+  <iframe id="frame" src="/play" allow="fullscreen; autoplay; gamepad" allowfullscreen></iframe>
+</body>
+</html>
