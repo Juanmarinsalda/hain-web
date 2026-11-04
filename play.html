@@ -11,6 +11,10 @@
      es igual al tamaño interno del canvas; si se estira, el mouse y el loading quedan desplazados. */
   canvas{position:absolute;top:50%;left:50%;bottom:-50%;right:-50%;transform:translate(-50%,-50%);
     image-rendering:optimizeSpeed;touch-action:none;outline:none}
+  #fs{position:fixed;right:6px;top:6px;z-index:20;width:36px;height:36px;padding:0;border:2px solid rgba(255,255,255,.85);border-radius:9px;cursor:pointer;
+      background:rgba(20,20,40,.85);color:#fff;opacity:.9;display:none;align-items:center;justify-content:center}
+  #fs:hover{opacity:1}
+  #fs svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   #loading_screen{display:none!important}   /* loading gris por defecto de GameMaker */
   #start{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:14px;padding-bottom:7vh;
     background:#080916 url(card.png) center/contain no-repeat;cursor:pointer;z-index:10;color:#fff}
@@ -26,6 +30,7 @@
 <div class="gm4html5_div_class" id="gm4html5_div_id">
   <canvas id="canvas" width="1024" height="576" tabindex="0"></canvas>
 </div>
+<button id="fs" title="Fullscreen" aria-label="Fullscreen"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
 <div id="start"><div class="btn" id="msg">▶ PLAY</div><div class="bar"><i></i></div></div>
 
 <script src="html5game/HAIN.js?cachebust=1613019247"></script>
@@ -51,6 +56,25 @@
     }, 100);
   }
   document.getElementById('start').addEventListener('pointerdown', go);
+
+  // Botón de pantalla completa: se muestra cuando la página está dentro de X (iframe de otro dominio)
+  // o abierta sola. Si el navegador/X no permite fullscreen, abre el juego en una pestaña nueva.
+  var fs = document.getElementById('fs');
+  var inOwnPage = false;
+  try { inOwnPage = (window.parent !== window) && !!window.parent.document; } catch(e) { inOwnPage = false; }
+  if (!inOwnPage) fs.style.display = 'flex';
+  fs.addEventListener('click', function(e){
+    e.stopPropagation();
+    var el = document.documentElement;
+    var req = el.requestFullscreen || el.webkitRequestFullscreen;
+    var inFrame = (window.parent !== window);
+    if (req && document.fullscreenEnabled !== false) {
+      var r = req.call(el);
+      if (r && r.catch) r.catch(function(){ window.open('/', '_blank'); });
+    } else {
+      window.open(inFrame ? '/' : location.href, '_blank');
+    }
+  });
   document.addEventListener('keydown', function(e){ if(!started && (e.key==='Enter'||e.key===' ')) go(); });
 </script>
 </body>
